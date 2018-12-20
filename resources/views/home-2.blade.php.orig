@@ -1,0 +1,36 @@
+@extends('layouts.master')
+
+@section('content')
+<section id="main">
+	<div class="container ">
+		<div class="col-md-12 col-md-offset-0 profile" style="background-color: white;margin:20px 0;">
+			<h1 class="green">Добро пожаловать в личный кабинет {{$user->name}}</h1>
+			<ul class="list-inline">
+				<li><a class="btn btn-default" href="/f/myrooms">Мои комнаты</a></li>
+				<li><a class="btn btn-default" href="/home/settings">Личные настройки</a></li>
+				<li><a class="btn btn-default" href="/home/orders">Заказы</a></li>
+
+				@if($user->is('author'))
+					<li><a class="btn btn-default" href="/home/projects">Проекты</a></li>
+					<li><a class="btn btn-default" href="/home/rooms">Комнаты</a></li>
+				@endif
+				@if(!$user->hasRequestToAuthor())
+					<li><a class="btn {{$user->getRequestToAuthorClassName()['class']}} request-to-authors-link" href="/home/request-to-authors">{{$user->getRequestToAuthorClassName()['text']}}</a></li>
+
+				@endif
+			</ul>
+		</div>
+	</div>
+</section>
+<div class="modal fade" id="response-modal" role="dialog">
+	<div class="modal-dialog modal-md" >
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<p class="green text-center">Спасибо что оставили заявку на автора. Мы рассмотрим вашу заявку в ближайшее время.</p>
+			</div>
+		</div>
+	</div>
+</div>
+@endsection

@@ -1,0 +1,94 @@
+@extends('layouts.master')
+@section('title','RoomLook')
+@section('content')
+
+<section id="main" class="padding-bottom-20">
+<div class="container-fluid bg-gray padding-bottom-40">
+                        <div class="container about-author">
+                            <div class="col-md-2">
+                                @if (Auth::user()->image == "")
+                                <img class="img-responsive" src="/images/user-placeholder.jpg"/>
+                                @else
+                                <img class="img-responsive" src="/{{ Auth::user()->image }}"/>
+                                @endif
+
+                            </div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <div class="author-name-and-social">
+                                        <h2 class="margin-top-0">{{ Auth::user()->name }}</h2>
+                                        <a href="{{ Auth::user()->fb }}" target="_blank"><i class="social_facebook_circle"></i></a>
+                                        <a href="{{ Auth::user()->instagram }}" target="_blank"><i class="social_instagram_circle"></i></a>
+                                        <a href="{{ Auth::user()->twitter }}" target="_blank"><i class="social_twitter_circle"></i></a>
+                                    </div>
+                                    <p>
+                                </div>
+                                <div class="row about-author-text" >
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+	<div class="container">
+
+		<h1 class="text-uppercase">{{ trans('frontend.common.myrooms') }}</h1>
+
+		<div class="col-md-12 myrooms bg-white margin-bottom-20">
+		<div class="ownrooms">
+			<div class="col-sm-3 col-xs-12">
+				<div class=" ownroom ownroom-addNew">
+				<a href="#" tabIndex="-1"  class="" data-toggle="modal" data-target="#createModal"><h3 class="text-center">+ {{ trans('frontend.common.create-room') }}</h3></a>
+				</div>
+			</div>
+			@foreach (Auth::user()->ownRooms()->get() as $own)
+				<div  class="col-sm-3 col-xs-12">
+				@if ($own->roomPictures()->count() > 0)
+				<div class="ownroom" style="background-image:url(/{{ $own->roomPics()->first()->imagePath() }})">
+				@elseif ($own->productPictures()->count())
+				<div class="ownroom" style="background-image:url(/{{ $own->productPics()->first()->imagePath() }})">
+				@else
+				<div class="ownroom" >
+				@endif
+					<div class="ownroom-overlay">
+					<h2 class="text-center"><a href="/f/myroom/room/{{ $own->id }}">{{ $own->name }}</a></h2>
+					<p class="text-center">{{ trans('frontend.common.rooms') }} {{$own->roomPictures()->count()}}, {{ trans('frontend.common.catalog') }} {{ $own->productPictures()->count() }}</p>
+					</div>
+				</div>
+				</div>
+
+			@endforeach
+		</div>
+</div>
+
+		
+	</div>
+    
+</section>
+<!-- Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    	<form action="/f/myroom/create-room" method="get">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel">{{ trans('frontend.common.create-room') }}</h4>
+	      </div>
+	      <div class="modal-body">
+	      	
+	      		<div class="form-group">
+	      			<input type="text" name="name" class="form-control" placeholder="{{ trans('frontend.common.create-room') }}">
+	      			<input type="hidden" name="_token" value="{{ csrf_token() }}">
+	      		</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('frontend.common.save') }}</button>
+	        <button type="submit" class="btn btn-primary">{{ trans('frontend.auth.submit') }}</button>
+	      </div>
+      	</form>
+    </div>
+  </div>
+</div>
+@stop
+
+

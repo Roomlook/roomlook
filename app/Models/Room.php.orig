@@ -1,0 +1,34 @@
+<?php namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Like;
+use App\Models\RoomPicture;
+class Room extends Model {
+
+	protected $table = "rooms";
+    protected $fillable = ['title', 'body', 'status_id', 'project_id', 'slug', '3dmaxfile', 'room_type_id'];
+    public function project(){
+        return $this->belongsTo('App\Models\Project');
+    }
+    public function likes() {
+    	return Like::where('model_name','Room')->where('model_id',$this->id);
+    }
+    public function countLikes() {
+    	return count($this->likes()->get());
+    }
+    public function pictures() {
+        return $this->hasMany('App\Models\RoomPicture');
+    }
+    public function roomType() {
+        return $this->belongsTo('App\Models\RoomType');
+    }
+
+    public function styles() {
+        return $this->belongsToMany('App\Models\Style','style_room');
+    }
+    public static function popular() {
+        $roomIds = Like::where('model_name','RoomPicture')->orderBy('id','DESC')->lists('model_id');
+        return RoomPicture::whereIn('id',$roomIds)->get();
+
+    }
+}
